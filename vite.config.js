@@ -18,11 +18,8 @@ export default defineConfig({
 
   // Configure the server to serve files from the public directory
   server: {
-    open: "/index.html", // Opens index.html on server start
-    watch: {
-      usePolling: true, // This can help in some environments where default watching is unreliable
-    },
-    force: true, // Forces reloading between saves
+    port: 8080,
+    hot: true,
   },
 
   // If you use assets in the public directory, make sure they are copied over
