@@ -13,6 +13,25 @@ export default defineConfig({
       input: {
         main: path.resolve(__dirname, "src/index.html"), // Entry file
       },
+      output: {
+        manualChunks: () => "all-in-one",
+        entryFileNames: `assets/index-[hash].js`,
+        assetFileNames: (assetInfo) => {
+          const assetType = getAssetType(assetInfo.name);
+          switch (assetType) {
+            case "css":
+              return "assets/styles-[hash][extname]";
+            case "js":
+              return "assets/[name]-[hash][extname]";
+            case "image":
+              return "assets/images/[name]-[hash][extname]";
+            case "font":
+              return "assets/fonts/[name]-[hash][extname]";
+            default:
+              return "assets/other/[name]-[hash][extname]";
+          }
+        },
+      },
     },
   },
 
@@ -25,3 +44,26 @@ export default defineConfig({
   // If you use assets in the public directory, make sure they are copied over
   publicDir: path.resolve(__dirname, "public"),
 });
+
+function getAssetType(fileName) {
+  const extension = fileName.slice(fileName.lastIndexOf("."));
+  switch (extension) {
+    case ".css":
+      return "css";
+    case ".png":
+    case ".jpg":
+    case ".jpeg":
+    case ".gif":
+    case ".svg":
+    case ".webp":
+    case ".avif":
+      return "image";
+    case ".woff":
+    case ".woff2":
+    case ".ttf":
+    case ".eot":
+      return "font";
+    default:
+      return "other";
+  }
+}
